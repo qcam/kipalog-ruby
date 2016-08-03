@@ -1,12 +1,8 @@
 require 'virtus'
-require 'httparty'
 
 module Kipalog
   class Post
     include Virtus.model
-    include HTTParty
-
-    base_uri 'kipalog.com/api/v1/post'
 
     attribute :title, String
     attribute :content, String
@@ -14,16 +10,12 @@ module Kipalog
     attribute :status, String
 
     class << self
-      def preview(content)
-        request = post(
-          '/preview',
-          body: {content: content}.to_json,
-          headers: {
-            'X-KIPALOG-TOKEN' => Kipalog.config.api_key
-          }
-        )
+      def client
+        Kipalog::APIClient.new
+      end
 
-        result = Kipalog::Result.from_json(request.parsed_response)
+      def preview(content)
+        result = client.post('/post/preview', content: content)
 
         if result.ok?
           result.content

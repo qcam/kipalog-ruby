@@ -9,6 +9,12 @@ describe Kipalog do
 
       assert_equal 'FOO', Kipalog.config.api_key
     end
+
+    after do
+      Kipalog.configure do |config|
+        config = nil
+      end
+    end
   end
 end
 

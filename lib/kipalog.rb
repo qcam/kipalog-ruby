@@ -17,4 +17,5 @@ end
 require 'kipalog/configuration'
 require 'kipalog/post'
 require 'kipalog/result'
+require 'kipalog/api_client'
 

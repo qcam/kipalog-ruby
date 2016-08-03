@@ -3,11 +3,11 @@ require 'test_helper'
 describe Kipalog::Configuration do
   describe '#initialize' do
     it 'takes KIPALOG_API_KEY as the api key if nothing was set' do
-      ENV['KIPALOG_API_KEY'] = 'KIPALOG'
-
+      ENV['KIPALOG_API_KEY'] = 'TEST'
       config = Kipalog::Configuration.new
 
-      assert_equal 'KIPALOG', config.api_key
+      assert_equal 'TEST', config.api_key
+      ENV['KIPALOG_API_KEY'] = nil
     end
 
     it 'takes the api key passed in' do

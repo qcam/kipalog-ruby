@@ -34,7 +34,7 @@ describe Kipalog::Post do
       }.to_json
 
       stub_request(:post, "http://kipalog.com/api/v1/post/preview").
-        with(body: request_body).
+        with(body: request_body, headers: { 'Accept-Charset' => 'application/json', 'X-Kipalog-Token' => 'KIP-IT' }).
         to_return(status: 200, body: response_body)
       html = Kipalog::Post.preview(@markdown)
 

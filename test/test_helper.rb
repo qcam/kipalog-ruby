@@ -1,9 +1,20 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'kipalog'
 
-ENV['KIPALOG_API_KEY'] = 'KIP-IT'
-
 require 'minitest/autorun'
 require 'webmock/minitest'
 
-ENV['KIPALOG_API_KEY'] = 'KIP-IT'
+MiniTest::Test.class_eval do
+  def setup
+    Kipalog.configure do |config|
+      config.api_key = 'KIP-IT'
+    end
+  end
+
+  def teardown
+    Kipalog.configure do |config|
+      config.api_key = nil
+    end
+  end
+end
+
