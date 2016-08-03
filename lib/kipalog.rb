@@ -10,7 +10,10 @@ module Kipalog
       @config ||= Configuration.new
     end
   end
+
+  class RequestError < ::StandardError; end
 end
 
 require 'kipalog/configuration'
+require 'kipalog/post'
 
