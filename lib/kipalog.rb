@@ -1,5 +1,16 @@
 require "kipalog/version"
 
 module Kipalog
-  # Your code goes here...
+  class << self
+    def configure
+      yield(config)
+    end
+
+    def config
+      @config ||= Configuration.new
+    end
+  end
 end
+
+require 'kipalog/configuration'
+
