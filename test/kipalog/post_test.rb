@@ -58,9 +58,11 @@ describe Kipalog::Post do
         with(body: request_body).
         to_return(status: 422, body: response_body)
 
-      assert_raises(Kipalog::RequestError) do
+      err = assert_raises(Kipalog::RequestError) do |e|
         Kipalog::Post.preview(@markdown)
       end
+
+      assert_equal "401: sorry, you giving us wrong api key :(", err.message
     end
   end
 end

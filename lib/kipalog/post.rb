@@ -23,12 +23,12 @@ module Kipalog
           }
         )
 
-        response = JSON.parse(request.parsed_response)
+        result = Kipalog::Result.from_json(request.parsed_response)
 
-        if request.success?
-          response["content"]
+        if result.ok?
+          result.content
         else
-          raise RequestError, "#{response["status"]}: #{response["cause"]}"
+          raise RequestError, "#{result.status}: #{result.cause}"
         end
       end
     end
