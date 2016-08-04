@@ -48,4 +48,47 @@ describe Kipalog::Post do
       assert_equal response_body, err.message
     end
   end
+
+  describe '.create' do
+    it 'calls POST request to create post' do
+      data = {
+        title: 'foo',
+        tag: 'bar',
+        status: 'published',
+        content: '#data'
+      }
+
+      client = MiniTest::Mock.new
+      client.expect(:post, '{}', ['/post', data])
+      Kipalog::Post.stub(:client, client) { Kipalog::Post.create(data) }
+      assert_mock client
+    end
+  end
+
+  describe '.hot' do
+    it 'gets the hot posts' do
+      client = MiniTest::Mock.new
+      client.expect(:get, '{}', ['/post/hot'])
+      Kipalog::Post.stub(:client, client) { Kipalog::Post.hot }
+      assert_mock client
+    end
+  end
+
+  describe '.newest' do
+    it 'gets the latest posts from client' do
+      client = MiniTest::Mock.new
+      client.expect(:get, '{}', ['/post/newest'])
+      Kipalog::Post.stub(:client, client) { Kipalog::Post.newest }
+      assert_mock client
+    end
+  end
+
+  describe '.bytag' do
+    it 'gets the latest posts from client' do
+      client = MiniTest::Mock.new
+      client.expect(:post, '{}', ['/post/bytag', { tag_name: 'foo' }])
+      Kipalog::Post.stub(:client, client) { Kipalog::Post.bytag('foo') }
+      assert_mock client
+    end
+  end
 end
