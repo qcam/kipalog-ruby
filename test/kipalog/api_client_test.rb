@@ -6,22 +6,38 @@ describe Kipalog::APIClient do
   end
 
   describe '#get' do
-    before do
+    it 'sends GET request to path and returns result in Kipalog::Result' do
       @res_body = {
         content: 'FOO',
         status: 200,
         cause: ''
-      }
+      }.to_json
+
       stub_request(:get, "http://kipalog.com/api/v1/foo").
         with(headers: {'Accept-Charset'=>'application/json', 'X-Kipalog-Token'=>'KIP-IT'}).
-        to_return(status: 200, body: @res_body.to_json, headers: {})
+        to_return(status: 200, body: @res_body, headers: {})
+
+      response = @client.get('/foo')
+      assert_instance_of(Kipalog::Response, response)
+      assert_equal(@res_body, response.body)
+      assert_equal(200, response.status_code)
     end
 
-    it 'sends GET request to path and returns result in Kipalog::Result' do
-      result = @client.get('/foo')
-      assert_instance_of(Kipalog::Result, result)
-      assert_equal('FOO', result.content)
-      assert_equal(200, result.status)
+    it 'raises RequestError if response is not ok' do
+      @res_body = {
+        content: '',
+        status: 422,
+        cause: 'foo'
+      }.to_json
+      stub_request(:get, "http://kipalog.com/api/v1/foo").
+        with(headers: {'Accept-Charset'=>'application/json', 'X-Kipalog-Token'=>'KIP-IT'}).
+        to_return(status: 422, body: @res_body, headers: {})
+
+      err = assert_raises(Kipalog::RequestError) do
+        @client.get('/foo')
+      end
+
+      assert_equal(@res_body, err.message)
     end
   end
 
@@ -31,21 +47,20 @@ describe Kipalog::APIClient do
         content: 'FOO',
         status: 200,
         cause: ''
-      }
+      }.to_json
       @req_body = {
         foo: 'bar'
-      }
+      }.to_json
       stub_request(:post, "http://kipalog.com/api/v1/foo").
-        with(body: @req_body.to_json, headers: {'Accept-Charset'=>'application/json', 'X-Kipalog-Token'=>'KIP-IT'}).
-        to_return(status: 200, body: @res_body.to_json, headers: {})
+        with(body: @req_body, headers: {'Accept-Charset'=>'application/json', 'X-Kipalog-Token'=>'KIP-IT'}).
+        to_return(status: 200, body: @res_body, headers: {})
     end
 
     it 'sends GET request to path' do
-      expected = Kipalog::Result.new(@res_body)
-      result = @client.post('/foo', { foo: 'bar' })
-      assert_instance_of(Kipalog::Result, result)
-      assert_equal(expected.content, result.content)
-      assert_equal(expected.status, result.status)
+      response = @client.post('/foo', { foo: 'bar' })
+      assert_instance_of(Kipalog::Response, response)
+      assert_equal(@res_body, response.body)
+      assert_equal(200, response.status_code)
     end
   end
 end
