@@ -6,7 +6,7 @@ module Kipalog
     attr_accessor :api_key
     alias :token :api_key
 
-    def initialize(api_key = ENV[KIPALOG_API_KEY])
+    def initialize(api_key = '')
       @api_key = api_key
     end
   end
